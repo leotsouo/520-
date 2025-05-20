@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>520</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .heartbeat {
+            animation: heartbeat 1s infinite;
+        }
+
+        .hidden-photo {
+            max-width: 300px;
+            margin: 20px auto;
+            display: none;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center h-screen bg-pink-50 relative">
+
+<button id="heart" class="text-6xl heartbeat text-red-500 cursor-pointer">
+    ❤️
+</button>
+<div id="message" class="mt-8 text-xl text-gray-700 whitespace-pre-line text-center"></div>
+<img id="photo" class="hidden-photo" src="" alt="回憶照片">
+<button id="quiz-btn" class="hidden mt-4 bg-red-400 text-white px-4 py-2 rounded">開始愛的測驗</button>
+<div id="quiz" class="hidden mt-4 text-center"></div>
+
+<audio id="bg-music" src="your_music.mp3"></audio>
+
+<script>
+    const texts = [
+        "寶寶，今天是520！我想特別告訴妳，",
+        "We weren’t destiny. I was destined to find you.",
+        "謝謝妳一直陪著我，愛我，疼我",
+        "就算我們因為意見不合吵架",
+        "但我知道愛不是佔有，但如果你不佔有，那還算愛嗎？",
+        "我們都是如此愛著對方",
+        "I would have been anyone for you. 未來我會更加努力，給妳幸福和快樂！",
+        "我真的非常非常愛妳💖I had never loved until I met you."
+    ];
+
+    const photos = [
+        "photo1.jpg",
+        "photo2.jpg",
+        "photo3.jpg",
+        "photo4.jpg",
+        "photo5.jpg",
+        "photo6.jpg",
+        "photo7.jpg",
+        "photo8.jpg",
+        "photo9.jpg"
+    ];
+
+    const quizQuestions = [
+        { question: "你是我的誰？", answer: "寶寶" },
+        { question: "我告白是在哪裡呀？", answer: "好睡咖啡" },
+        { question: "紀念日是幾月幾日？", answer: "11月13日" },
+        { question: "我最喜歡的地方是什麼？", answer: "有我的地方" },
+        { question: "我最喜歡的食物是什麼？", answer: "蛋" },
+        { question: "我最喜歡的你的地方是甚麼？", answer: "眼睛" },
+        { question: "我最愛的是誰？", answer: "我" }
+    ];
+
+    const message = document.getElementById('message');
+    const heart = document.getElementById('heart');
+    const photo = document.getElementById('photo');
+    const quizBtn = document.getElementById('quiz-btn');
+    const quizDiv = document.getElementById('quiz');
+    const bgMusic = document.getElementById('bg-music');
+
+    heart.addEventListener('click', () => {
+        bgMusic.play();
+        message.textContent = "";
+        let textIndex = 0;
+
+        function typeWriter(sentence, photoSrc, callback) {
+            let charIndex = 0;
+            message.textContent = "";
+            photo.src = photoSrc;
+            photo.style.display = "block";
+            const interval = setInterval(() => {
+                if (charIndex < sentence.length) {
+                    message.textContent += sentence.charAt(charIndex);
+                    charIndex++;
+                } else {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        photo.style.display = "none";
+                        callback();
+                    }, 2000);
+                }
+            }, 100);
+        }
+
+        function displayNextSentence() {
+            if (textIndex < texts.length) {
+                typeWriter(texts[textIndex], photos[textIndex], () => {
+                    textIndex++;
+                    displayNextSentence();
+                });
+            } else {
+                quizBtn.style.display = "inline-block";
+            }
+        }
+
+        displayNextSentence();
+    });
+
+    quizBtn.addEventListener('click', () => {
+        quizBtn.style.display = "none";
+        let quizIndex = 0;
+
+        function showQuiz() {
+            if (quizIndex < quizQuestions.length) {
+                const q = quizQuestions[quizIndex];
+                quizDiv.innerHTML = `<p>${q.question}</p><input id="answer" class="mt-2 border rounded px-2 py-1"><button id="submit-answer" class="mt-2 ml-2 bg-red-400 text-white px-2 py-1 rounded">提交</button>`;
+                quizDiv.style.display = "block";
+
+                document.getElementById('submit-answer').onclick = () => {
+                    const answer = document.getElementById('answer').value;
+                    if (answer.trim() === q.answer) {
+                        quizIndex++;
+                        showQuiz();
+                    } else {
+                        alert('再想想看！');
+                    }
+                };
+            } else {
+                quizDiv.innerHTML = "妳棒棒！角落裡有個小彩蛋喔🎁";
+            }
+        }
+
+        showQuiz();
+    });
+</script>
+
+<a href="#" class="absolute bottom-4 right-4 text-red-300 hover:text-red-500" onclick="alert('妳找到彩蛋了！送你520禮物！💝啾啾啾！');">🎁</a>
+
+</body>
+</html>
